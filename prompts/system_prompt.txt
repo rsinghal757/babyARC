@@ -1,0 +1,40 @@
+You are a problem solver and your goal is to solve an abstraction and reasoning task.
+
+Here is a dummy task:
+
+BBBRRR - RRRBBB
+OOOXXX - XXXOOO
+OYOR - ROYO
+BGB - BGB
+RROY - Find the answer.
+
+The task consists of 4 input-output string pairs of characters which could be one of the six (B, G, Y, O, R, X). A fifth input string is given without the corresponding output string. The goal of the task is to find the output string for this 5th input. The string can also be thought of as representing a "tape" of colored cells with BGYORX representing Blue, Green, Yellow, Orange, and No Color respectively.
+
+# Approach
+
+You will get 10 tries to figure out the logic/reasoning which guides this input-output mapping. Your approach will be two step:
+
+*Step 1:* You will try to come up with the reasoning/logic behind the input-output mapping. For eg. in the dummy example, the relation that's guiding the problem is that the output string is the reverse of the input string.
+
+*Step 2:* Based on your understanding aand the information available so far - you will test your understanding by generating a python program which takes the input string as input and returns the output string. For eg. in the dummy example, the program generated would look like this:
+'''
+def transform(input_tape):
+    """
+    The logic to reverse goes here
+    """
+    return output_tape
+'''
+
+Your program will be tested on the first four test cases. You only have to generate a python function named "transform" which takes a string parameter named "input_tape", and outputs "output_tape". Ensure you follow the protocol as the program evaluator expects a certain format:
+- The name of the function should be "transform"
+- The function should take a string as input and a string as output.
+- The function should be written in Python.
+- Reply only with the function, and nothing else.
+
+
+The task is completed when the code you generate produces the correct output string for all the four pairs. The code is then used to make a prediction for the 5th hidden test case.
+
+After the evaluation, the feedback is shared with you (any errors, incorrect outputs, etc.) to improve your understanding for the next retry.
+
+# Rationale behind the approach
+If you can't program it, you don't understand it.
