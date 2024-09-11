@@ -18,7 +18,7 @@ client = OpenAI(
     project=project,
     api_key=api_key
 )
-model="gpt-4o"
+model="gpt-4o-mini"
 
 with open('prompts/system_prompt.txt', 'r') as file:
     system_prompt = file.read()
@@ -87,42 +87,43 @@ def test_program_and_get_feedback(code, test_cases):
 
 def decode_task(task):
     task_pairs = task.get(list(task.keys())[0])
-    train_pairs, test_pair = task_pairs[:-1], task_pairs[-1]
-    decoded_task = "Here is the task to be solved:\n\n"
-
+    train_pairs = task_pairs[:-1]
+    decoded_task = ""
     for train_pair in train_pairs:
         decoded_task = decoded_task + "Input Tape: " + train_pair[0] + ", Output Tape: " + train_pair[1] + "\n"
-    decoded_task = decoded_task + "\n" + "Input Tape: " + test_pair[0]
-
     return decoded_task
 
 def solve(task, max_retries=10):
     # Task in natural language
     task_prompt = decode_task(task)
-    messages=[
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": task_prompt}
-        ]
-    
+
+    assistant = client.beta.assistants.create(
+        name="Reasoning Task Solver",
+        instructions=f"{system_prompt}".format(task_prompt=task_prompt, max_retries=max_retries),
+        model=model
+    )
+    thread = client.beta.threads.create()
+
     for i in range(max_retries):
 
-        print(f"Try {i+1} in progress.")
-        
-        messages.append({"role": "system", "content": f"Try: {i+1}, Step 1: Understand"})
-        reasoning = client.chat.completions.create(model=model, messages=messages)
-        reasoning = reasoning.choices[0].message.content
-        messages.append({"role": "assistant", "content": reasoning})
+        message = client.beta.threads.messages.create(
+            thread_id=thread.id,
+            role="user",
+            content=f"Try {i+1}: Step 1 - Articulate your reasoning for solving the task. Plain English.")
+        run = client.beta.threads.runs.create_and_poll(thread_id=thread.id, assistant_id=assistant.id)
 
-        print(f"{'-'*8} Reasoning generated.")
+        message = client.beta.threads.messages.create(
+            thread_id=thread.id,
+            role="user",
+            content=f"Try {i+1}: Step 2 - Write the program based on your reasoning. Python only.")
+        run = client.beta.threads.runs.create_and_poll(thread_id=thread.id, assistant_id=assistant.id)
 
-        messages.append({"role": "system", "content": f"Try: {i+1}, Step 2: Program"})
-        program = client.chat.completions.create(model=model, messages=messages)
+        if run.status == "completed":
+            print(f"{'-'*8} Try {i+1} completed. Program generated.")
+            message = client.beta.threads.messages.list(thread_id=thread.id, limit=1)
+            code = message.data[0].content[0].text.value[9:-3]
 
-        print(f"{'-'*8} Program generated.")
-
-        code = program.choices[0].message.content
         train_tests_passed, fifth_test_passed, output = test_program_and_get_feedback(code, task)
-
         print(f"{'-'*8} Program evaluated.")
 
         if train_tests_passed:
@@ -131,7 +132,7 @@ def solve(task, max_retries=10):
                 return True
             return False
 
-        messages.append({"role": "user", "content": output})
+        message = client.beta.threads.messages.create(thread_id=thread.id, role="user", content=output)
 
     return False
 
@@ -148,14 +149,13 @@ for idx, task in enumerate(tasks_list):
         task_data.append(groups)
     tasks.append({task_name: task_data})
 
-tasks = tasks[:10]
 score = 0
 for i in range(0, len(tasks)):
     print(f"Solving task: {i+1}")
-    print(f"{'='*50}\n")
+    print(f"{'='*50}")
     task = tasks[i]
-    solved = solve(task)
+    solved = solve(task, max_retries=25)
     score += solved
-    print(f"{'='*50}\n\n")
+    print(f"{'='*50}\n")
 
 print(f"Accuracy: Solved {score} out of {len(tasks)} tasks")
