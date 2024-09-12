@@ -13,6 +13,7 @@ This repository contains 3 things:
 1. `data.txt`: This is the data containing 23 tasks (more to be added). Each task has five input-output pairs of strings containing one of the six letters B, Y, O, R, G, and X. These strings can be thought of as a tape (a one-dimensional grid) of colors where the letters represent Blue, Yellow, Orange, Red, Green, and No Color respectively.
 
 2. `playground.ipynb`: This jupyter notebook contains an interactive playground for playing around with the tasks. A task looks something like this.
+
 ![Task 1](assets/task_1.png)
 
 3. `solver.py`: This is an example script that uses OpenAI's Assistants API with gpt-4o-mini to solve the tasks. The model (gpt-4o-mini) takes the task description and other instructions as input, and generates a Python program that can map the input tape (a string) to the output tape (a string). The system prompt can be found in the `system_prompt.txt` file in `prompts` directory.
