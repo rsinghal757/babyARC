@@ -1,6 +1,6 @@
 # BabyARC: Tiny Abstraction and Reasoning Tasks Dataset
 
-BabyARC is a tiny abstraction and reasoning dataset inspired by the original (Abstraction and Reasoning Corpus)[https://github.com/fchollet/ARC-AGI/] by (Francois Chollet)[https://x.com/fchollet].
+BabyARC is a tiny abstraction and reasoning dataset inspired by the original [Abstraction and Reasoning Corpus](https://github.com/fchollet/ARC-AGI/) by [Francois Chollet](https://x.com/fchollet).
 
 ARC aims to be a benchmark for AI models as well as Program Synthesis - and given the complexity of the task, most AI models inlcuding tranformer based LLMs struggle with it.
 
