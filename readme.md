@@ -1,18 +1,25 @@
-# Tape Transformation Game
+# BabyARC: Tiny Abstraction and Reasoning Tasks Dataset
 
-This repository contains an interactive game designed to solve abstraction and reasoning tasks. The game presents users with input-output string pairs, and the goal is to determine the transformation logic to predict the output for a given input.
+BabyARC is a tiny abstraction and reasoning dataset inspired by the original (Abstraction and Reasoning Corpus)[https://github.com/fchollet/ARC-AGI/] by (Francois Chollet)[https://x.com/fchollet].
 
-## Table of Contents
+ARC aims to be a benchmark for AI models as well as Program Synthesis - and given the complexity of the task, most AI models inlcuding tranformer based LLMs struggle with it.
 
-- [Installation](#installation)
-- [Usage](#usage)
-- [Game Interface](#game-interface)
-- [System Prompt](#system-prompt)
-- [Development and Testing](#development-and-testing)
-- [Contributing](#contributing)
-- [License](#license)
+BabyARC is a much simpler dataset with relatively easier tasks. It is mostly a toy dataset that I created for my personal use-case - to play around with OpenAI's APIs and see how they perform on these.
 
-## Installation
+## Contents
+
+This repository contains 3 things:
+
+1. `data.txt`: This is the data containing 23 tasks (more to be added). Each task has five input-output pairs of strings containing one of the six letters B, Y, O, R, G, and X. These strings can be thought of as a tape (a one-dimensional grid) of colors where the letters represent Blue, Yellow, Orange, Red, Green, and No Color respectively.
+
+2. `playground.ipynb`: This jupyter notebook contains an interactive playground for playing around with the tasks. A task looks something like this.
+![Task 1](assets/task_1.png)
+
+3. `solver.py`: This is an example script that uses OpenAI's Assistants API with gpt-4o-mini to solve the tasks. The model (gpt-4o-mini) takes the task description and other instructions as input, and generates a Python program that can map the input tape (a string) to the output tape (a string). The system prompt can be found in the `system_prompt.txt` file in `prompts` directory.
+
+gpt-4o-mini was able to solve 2 out of 23 tasks when given 25 maximum retries to generate the correct Python program.
+
+## To Play Around
 
 1. **Clone the repository:**
     ```bash
@@ -41,66 +48,23 @@ This repository contains an interactive game designed to solve abstraction and r
 
 ## Usage
 
-1. **Run the game:**
+1. **Try out the tasks in the playground:**
     ```bash
     jupyter notebook
     ```
-    Open the `TapeTransformationGame.ipynb` notebook and execute the cells to start the game interface.
+    Open the `playground.ipynb` notebook and execute the cells to start the game interface.
 
 2. **Playing the game:**
     The game consists of multiple tasks, each with 4 example input-output pairs and a fifth input for which you need to predict the output. Use the provided color buttons to construct your predicted output tape.
 
-## Game Interface
+3. **Run the script or write your own:**
+    Though there's no train-test split in the dataset, you can use the first four pairs of each task as the training set and the last pair as the test set. The script can be found in `solver.py`. Or you can create your own using some program synthesis algorithm or LLMs.
 
-The game interface is implemented using Jupyter widgets to create an interactive experience. The main components of the interface include:
+## Roadmap
 
-- **Task Display:**
-  Shows the current task number and example input-output pairs.
-
-- **Input and Output Tapes:**
-  Displays the input tape for the current task and allows the user to construct the output tape.
-
-- **Color Buttons:**
-  Buttons representing different colors that users can click to add to the output tape.
-
-- **Delete Button:**
-  Allows users to remove the last added color from the output tape.
-
-- **Check Button:**
-  Validates the constructed output tape against the correct output for the current task.
-
-- **Navigation Buttons:**
-  Previous and Next buttons to navigate through different tasks.
-
-## System Prompt
-
-The system prompt guides the logic and reasoning process for solving the tasks. It consists of the following steps:
-
-1. **Understand the Problem:**
-   Identify the logic or transformation guiding the input-output mapping.
-
-2. **Generate a Program:**
-   Write a Python function named `transform` that implements the identified logic. The function should take an input tape as a string and return the transformed output tape as a string.
-
-3. **Evaluate the Program:**
-   Test the generated function against the example pairs to ensure correctness.
-
-## Development and Testing
-
-The repository includes a test framework to evaluate the generated programs. The main components include:
-
-- **`test_program_and_get_feedback` Function:**
-  Compiles and executes the generated Python code, then evaluates it against example pairs and provides feedback.
-
-- **`decode_task` Function:**
-  Converts a task dictionary into a human-readable format for the system prompt.
-
-- **`solve` Function:**
-  Iteratively attempts to solve the task by generating reasoning and programs, testing them, and refining based on feedback.
-
-## Contributing
-
-Contributions are welcome! If you have any suggestions, improvements, or bug fixes, please open an issue or submit a pull request.
+- Add more tasks (~100 tasks)
+- Try more LLMs and program synthesis algorithms
+- Better playground website (Currently you can try out the tasks in the playground notebook)
 
 ## License
 
