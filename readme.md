@@ -66,6 +66,7 @@ gpt-4o-mini was able to solve 2 out of 23 tasks when given 25 maximum retries to
 - Add more tasks (~100 tasks)
 - Try more LLMs and program synthesis algorithms
 - Better playground website (Currently you can try out the tasks in the playground notebook)
+- Better results logging
 
 ## License
 
